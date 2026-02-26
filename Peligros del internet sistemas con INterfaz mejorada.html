@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA HACKER - Luis Alejandro Pinilla</title>
+    <style>
+        :root {
+            --hacker-green: #00ff41;
+            --dark-green: #003b00;
+            --bg-black: #050505;
+            --pure-white: #ffffff;
+            --glow: 0 0 12px rgba(0, 255, 65, 0.8);
+        }
+
+        /* EFECTO CRT Y SCANLINE BLANCO */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            z-index: 10001;
+            pointer-events: none;
+            animation: scanline 10s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        /* PANTALLA DE CARGA */
+        #loader-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            color: var(--hacker-green);
+        }
+
+        .bar-container {
+            width: 250px;
+            height: 10px;
+            border: 1px solid var(--hacker-green);
+            margin-top: 15px;
+            box-shadow: var(--glow);
+        }
+
+        #bar-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--hacker-green);
+            box-shadow: 0 0 15px var(--hacker-green);
+        }
+
+        /* CONFIGURACIÓN GENERAL */
+        body {
+            background-color: var(--bg-black);
+            color: var(--pure-white);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+            background-image: linear-gradient(rgba(0, 255, 65, 0.02) 1px, transparent 1px);
+            background-size: 100% 3px;
+        }
+
+        #main-content { visibility: hidden; max-width: 900px; margin: 0 auto; position: relative; }
+
+        /* TÍTULO GLITCH (VERDE Y BLANCO) */
+        h1 { 
+            text-align: center; 
+            color: var(--hacker-green);
+            text-shadow: var(--glow); 
+            font-size: 3rem; 
+            animation: glitch-monochrome 5s infinite;
+        }
+
+        @keyframes glitch-monochrome {
+            0%, 90%, 100% { transform: translate(0); text-shadow: var(--glow); }
+            92% { transform: translate(-2px, 0); text-shadow: 2px 0 var(--pure-white); }
+            94% { transform: translate(2px, 0); text-shadow: -2px 0 var(--hacker-green); }
+        }
+
+        /* BOTÓN DE RECARGA FUNCIONAL */
+        #reload-btn {
+            position: absolute;
+            top: 0; right: 0;
+            background: transparent;
+            border: 1px solid var(--hacker-green);
+            color: var(--hacker-green);
+            padding: 10px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: 0.3s;
+            z-index: 1000;
+        }
+
+        #reload-btn:hover {
+            background: var(--hacker-green);
+            color: black;
+            box-shadow: 0 0 20px var(--hacker-green);
+        }
+
+        /* LISTA CON RESALTADO AL PASAR EL MOUSE */
+        ol {
+            background: rgba(0, 20, 0, 0.7);
+            padding: 25px 50px;
+            border: 1px solid var(--hacker-green);
+        }
+
+        li {
+            padding: 5px;
+            color: var(--hacker-green);
+            transition: 0.3s ease;
+            cursor: crosshair;
+        }
+
+        li:hover {
+            background: var(--hacker-green);
+            color: black;
+            font-weight: bold;
+            transform: translateX(10px);
+            box-shadow: var(--glow);
+        }
+
+        /* ACORDEONES */
+        details {
+            background: #000;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+            transition: border 0.3s;
+        }
+
+        details[open] { border: 1px solid var(--hacker-green); box-shadow: var(--glow); }
+
+        summary {
+            padding: 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--hacker-green);
+            font-weight: bold;
+            list-style: none;
+        }
+
+        summary:hover { background: rgba(0, 255, 65, 0.1); }
+
+        .contenido-texto {
+            padding: 20px;
+            color: var(--pure-white);
+            border-top: 1px solid var(--dark-green);
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .cursor::after { content: "█"; animation: blink 0.7s infinite; color: var(--hacker-green); }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            border-top: 1px solid var(--hacker-green);
+            text-align: center;
+            color: var(--hacker-green);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader-screen">
+        <div id="loader-msg" style="letter-spacing: 5px;">ESTABLECIENDO CONEXIÓN SEGURA...</div>
+        <div class="bar-container">
+            <div id="bar-fill"></div>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <button id="reload-btn" onclick="window.location.reload()">[ RECARGAR_TERMINAL ]</button>
+        
+        <header>
+            <h1 id="titulo-principal">EL INTERNET</h1>
+        </header>
+
+        <hr style="border: 0; height: 1px; background: var(--hacker-green); margin: 30px 0; opacity: 0.5;">
+
+        <h2>> Peligros del internet</h2>
+        <ol>
+            <li>Los extraños</li>
+            <li>Los malware</li>
+            <li>Phishing y Robos</li>
+            <li>Pérdida de Privacidad</li>
+            <li>Ciberacoso</li>
+            <li>Grooming</li>
+            <li>Interacción con desconocidos</li>
+            <li>Contenidos inapropiados</li>
+            <li>Fake News</li>
+            <li>Adicciones</li>
+        </ol>
+
+        <h3 style="color: var(--hacker-green);">SYSTEM_INFO</h3>
+        <p style="color: #888;">// En el internet se pueden hacer muchas cosas como jugar videojuegos, ver series y peliculas, entre otros. Pero esta dividido y cada una tiene sus propias caracteristicas.</p>
+
+        <h2>> Divisiones de la Red</h2>
+
+        <details>
+            <summary>[+] Surface web o la capa superficial</summary>
+            <div class="contenido-texto" data-text="La Surface Web (o web superficial) es la porción del Internet público, indexado por motores de búsqueda convencionales como Google, Bing o Yahoo, y accesible mediante navegadores estándar (Chrome, Firefox, Safari). Representa la 'punta del iceberg' de la red, incluyendo sitios web públicos, redes sociales, noticias y tiendas en línea. 
+
+Accesibilidad: Cualquiera puede entrar sin necesidad de permisos especiales o software complejo.
+Indexación: Todo su contenido es rastreado y registrado por motores de búsqueda.
+Contenido: Abarca sitios web informativos, blogs, redes sociales, tiendas en línea y foros.
+Rastreo: En esta red, los usuarios son fácilmente rastreables a través de su dirección IP.
+Proporción: Aunque parece enorme, se estima que es solo una pequeña parte (aproximadamente el 4% o menos) del contenido total de Internet, siendo el resto la Deep Web."></div>
+        </details>
+
+        <details>
+            <summary>[+] Deep web o web profunda</summary>
+            <div class="contenido-texto" data-text="La Deep Web (internet profunda) es la parte de la red no indexada por motores de búsqueda convencionales (como Google), representando aproximadamente el 90% del contenido de internet. Incluye sitios web privados, bases de datos académicas, correos electrónicos y contenido protegido por contraseña que es legal y necesario."></div>
+        </details>
+
+        <details>
+            <summary>[+] Dark Web o red oscura</summary>
+            <div class="contenido-texto" data-text="La Dark Web (o red oscura) es una parte de la Internet profunda (Deep Web) que no está indexada por los buscadores tradicionales (como Google) y requiere navegadores especiales, como Tor, para acceder. Ofrece alto anonimato, ocultando direcciones IP, y es conocida por alojar tanto actividades ilícitas (venta de drogas, datos robados) como usos legítimos de privacidad. 
+
+Aspectos clave de la Dark Web:
+Acceso Especializado: Se necesitan herramientas como el navegador Tor Project para acceder, las cuales cifran y enrutan el tráfico a través de múltiples nodos.
+Dominios .onion: Los sitios web en la Dark Web no terminan en .com o .es, sino en .onion, una red superpuesta que mantiene el anonimato.
+Anonimato y Privacidad: Es utilizada para evadir la censura, por periodistas, activistas o denunciantes, pero también por ciberdelincuentes para el comercio de información sensible, ransomware y productos ilegales.
+Riesgos: Entrar en la Dark Web conlleva peligros como infecciones de malware, estafas, phishing y exposición a contenido ilícito o perturbador."></div>
+        </details>
+
+        <footer>
+            <p>2025 SISTEMA OPERATIVO | <b>Luis Alejandro Pinilla Parada</b></p>
+        </footer>
+    </div>
+
+    <script>
+        // 1. Lógica de la barra de carga
+        const fill = document.getElementById('bar-fill');
+        const screen = document.getElementById('loader-screen');
+        const main = document.getElementById('main-content');
+        let width = 0;
+
+        const interval = setInterval(() => {
+            width += Math.random() * 20;
+            if (width >= 100) {
+                width = 100;
+                clearInterval(interval);
+                setTimeout(() => {
+                    screen.style.transition = 'opacity 0.5s';
+                    screen.style.opacity = '0';
+                    setTimeout(() => {
+                        screen.style.display = 'none';
+                        main.style.visibility = 'visible';
+                    }, 500);
+                }, 400);
+            }
+            fill.style.width = width + '%';
+        }, 100);
+
+        // 2. Lógica del texto que se escribe al expandir
+        document.querySelectorAll('details').forEach(detail => {
+            detail.addEventListener('toggle', function() {
+                if (this.open) {
+                    const contentDiv = this.querySelector('.contenido-texto');
+                    const fullText = contentDiv.getAttribute('data-text');
+                    
+                    if (contentDiv.innerText === "") { 
+                        let index = 0;
+                        contentDiv.classList.add('cursor');
+                        
+                        function type() {
+                            if (index < fullText.length) {
+                                contentDiv.innerText += fullText.charAt(index);
+                                index++;
+                                setTimeout(type, 12); 
+                            } else {
+                                contentDiv.classList.remove('cursor');
+                            }
+                        }
+                        type();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
